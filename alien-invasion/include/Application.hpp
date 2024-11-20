@@ -76,6 +76,13 @@ struct Application{
 		SDL_SetRenderDrawColor(mRenderer, 0xff, 0xff, 0xff, SDL_ALPHA_OPAQUE); // setting the object color to white
 		SDL_RenderRect(mRenderer, &mRect); // Rendering rect
 		SDL_RenderPresent(mRenderer);
+
+		/*temp code*/
+
+		mRect.x += 0.1f;
+		if(mRect.x + mRect.w >= 640){
+			mRect.x = 0;
+		}
 	}
 
 	void Update(){
