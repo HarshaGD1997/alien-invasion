@@ -20,7 +20,7 @@ struct MovingRectangle{
 		yPosDir = std::rand() % 1;
 	}
 
-	void Update(){
+	void Update(float deltaTime){
 		if(mRect.x > 640.0f - mRect.w){
 			xPosDir = false;	
 	}
@@ -38,11 +38,18 @@ struct MovingRectangle{
 		}
 
 		if(xPosDir){
-			mRect.x += mSpeed;
+			mRect.x += mSpeed * deltaTime;
 
 		}
 		else{
-			mRect.x -= mSpeed;
+			mRect.x -= mSpeed * deltaTime;
+		}
+
+		if(yPosDir){
+			mRect.y += mSpeed * deltaTime;
+		}
+		else{
+			mRect.y -= mSpeed * deltaTime;
 		}
 	
 	}
@@ -60,6 +67,6 @@ struct MovingRectangle{
 		SDL_FRect mRect{20.0f, 20.0f, 50.0f, 100.0f};
 		bool xPosDir;
 		bool yPosDir;
-		float mSpeed{1.0f};
+		float mSpeed{1000.0f};
 		
 };

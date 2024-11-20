@@ -86,39 +86,43 @@ struct Application{
 		
 	}
 
-	void Update(){
+	void Update(float deltaTime){
 		for(int i=0; i < 30; i++){
-			mRect[i].Update();
+			mRect[i].Update(deltaTime);
 		}
 	}
 
 
 	// Main Game Loop 
-	void Loop(){
+	void Loop(float targetFPS){
 		// Infinite loop
 		Uint64 lastTime, currentTime, frameRateCount=0;
 		lastTime = SDL_GetTicks();
 		
+		float deltaTime = 1.0f/targetFPS;
+
 		while(mRun){
 			Uint64 startOfFrame = SDL_GetTicks();
 			Input();
-			Update();
+			Update(deltaTime);
 			Render();
 			
 			Uint64 elapsedTime = SDL_GetTicks()-startOfFrame;
+			
 			frameRateCount++;
 			
-			Uint64 delay = (1000/60)-elapsedTime;
+			Uint64 delay = (1000/targetFPS)-elapsedTime;
 			currentTime = SDL_GetTicks();
 			//frame capping
 
-			if(elapsedTime < (1000/60)){
+			if(elapsedTime < (1000/targetFPS)){
 				SDL_Delay(delay);
 			}
 
 			if(currentTime > lastTime + 1000){
 			
 				SDL_Log("%li : ",frameRateCount);
+				deltaTime = 1.0f/frameRateCount;
 				frameRateCount = 0;
 				lastTime = SDL_GetTicks();
 			}
