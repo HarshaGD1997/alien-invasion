@@ -100,13 +100,22 @@ struct Application{
 		lastTime = SDL_GetTicks();
 		
 		while(mRun){
+			Uint64 startOfFrame = SDL_GetTicks();
 			Input();
 			Update();
 			Render();
 			
+			Uint64 elapsedTime = SDL_GetTicks()-startOfFrame;
 			frameRateCount++;
-
+			
+			Uint64 delay = (1000/60)-elapsedTime;
 			currentTime = SDL_GetTicks();
+			//frame capping
+
+			if(elapsedTime < (1000/60)){
+				SDL_Delay(delay);
+			}
+
 			if(currentTime > lastTime + 1000){
 			
 				SDL_Log("%li : ",frameRateCount);
