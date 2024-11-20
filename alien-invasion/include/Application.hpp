@@ -96,10 +96,23 @@ struct Application{
 	// Main Game Loop 
 	void Loop(){
 		// Infinite loop
+		Uint64 lastTime, currentTime, frameRateCount=0;
+		lastTime = SDL_GetTicks();
+		
 		while(mRun){
 			Input();
-			Render();
 			Update();
+			Render();
+			
+			frameRateCount++;
+
+			currentTime = SDL_GetTicks();
+			if(currentTime > lastTime + 1000){
+			
+				SDL_Log("%li : ",frameRateCount);
+				frameRateCount = 0;
+				lastTime = SDL_GetTicks();
+			}
 		}
 	}
 
