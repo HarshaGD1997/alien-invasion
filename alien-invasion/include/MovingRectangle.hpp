@@ -5,7 +5,7 @@
 struct MovingRectangle{
 	
 	MovingRectangle(){
-		mSpeed *= std::rand()%10 / 000.0f; // Randomize speed
+		mSpeed *= std::rand()%10 / 100.0f; // Randomize speed
 		mRect.x = std::rand()% 640;
 		mRect.y = std::rand() % 480;
 		SDL_Log("%f, %f", mRect.x, mRect.y);
