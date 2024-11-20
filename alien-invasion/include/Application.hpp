@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL3/SDL.h>
+#include "MovingRectangle.hpp"
 
 
 struct Application{
@@ -74,19 +75,21 @@ struct Application{
 		SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE); // setting background color to black
 		SDL_RenderClear(mRenderer);
 		SDL_SetRenderDrawColor(mRenderer, 0xff, 0xff, 0xff, SDL_ALPHA_OPAQUE); // setting the object color to white
-		SDL_RenderRect(mRenderer, &mRect); // Rendering rect
-		SDL_RenderPresent(mRenderer);
+		
+		
 
-		/*temp code*/
-
-		mRect.x += 0.1f;
-		if(mRect.x + mRect.w >= 640){
-			mRect.x = 0;
+		for(int i=0; i<30; i++){
+			mRect[i].Render(mRenderer);
 		}
+
+		SDL_RenderPresent(mRenderer);
+		
 	}
 
 	void Update(){
-	
+		for(int i=0; i < 30; i++){
+			mRect[i].Update();
+		}
 	}
 
 
@@ -103,8 +106,10 @@ struct Application{
 
 	// Class members
 	private:
+		MovingRectangle mRect[30];
 		bool mRun{true};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;
-		SDL_FRect mRect{10.0f, 20.0f, 100.0f, 200.0f};
+		
+		
 };
