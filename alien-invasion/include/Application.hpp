@@ -57,6 +57,10 @@ struct Application{
 			SDL_Log("Failed to create renderer %s", SDL_GetError());
 		}
 
+		for(int i=0; i<20; i++){
+			mRect.emplace_back(MovingRectangle(mRenderer)); 
+		}
+
 	}
 	
 	// Input method
@@ -78,7 +82,7 @@ struct Application{
 		
 		
 
-		for(int i=0; i<30; i++){
+		for(int i=0; i < mRect.size(); i++){
 			mRect[i].Render(mRenderer);
 		}
 
@@ -87,7 +91,7 @@ struct Application{
 	}
 
 	void Update(float deltaTime){
-		for(int i=0; i < 30; i++){
+		for(int i=0; i < mRect.size(); i++){
 			mRect[i].Update(deltaTime);
 		}
 	}
@@ -132,7 +136,7 @@ struct Application{
 
 	// Class members
 	private:
-		MovingRectangle mRect[30];
+		std::vector<MovingRectangle> mRect;
 		bool mRun{true};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;

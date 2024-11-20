@@ -1,10 +1,22 @@
 
 #include<cstdlib>
+#include <vector>
 
 
 struct MovingRectangle{
 	
-	MovingRectangle(){
+	MovingRectangle(SDL_Renderer *renderer){
+		
+		SDL_Surface *pixels = SDL_LoadBMP("./images/enemy.bmp");
+		
+		mTexture = SDL_CreateTextureFromSurface(renderer, pixels);
+
+		if(nullptr == mTexture){
+			SDL_Log("Could not load image");
+		}
+
+		SDL_DestroySurface(pixels);
+
 		mSpeed *= std::rand()%10 / 100.0f; // Randomize speed
 		mRect.x = std::rand()% 640;
 		mRect.y = std::rand() % 480;
@@ -18,6 +30,12 @@ struct MovingRectangle{
 
 		xPosDir = std::rand() % 1;
 		yPosDir = std::rand() % 1;
+	}
+
+	~MovingRectangle(){
+	
+		// TODO: Resource management
+		//SDL_DestroyTexture(mTexture);
 	}
 
 	void Update(float deltaTime){
@@ -55,6 +73,12 @@ struct MovingRectangle{
 	}
 
 	void Render(SDL_Renderer *renderer){
+		if(nullptr == mTexture){
+			SDL_RenderRect(renderer, &mRect);
+		}
+		else{
+			SDL_RenderTexture(renderer, mTexture, nullptr, &mRect);
+		}
 		SDL_RenderRect(renderer, &mRect);
 	}
 
@@ -68,5 +92,5 @@ struct MovingRectangle{
 		bool xPosDir;
 		bool yPosDir;
 		float mSpeed{1000.0f};
-		
+		SDL_Texture *mTexture;
 };
