@@ -7,10 +7,11 @@ struct MovingRectangle{
 	
 	MovingRectangle(SDL_Renderer *renderer){
 		
-		SDL_Surface *pixels = SDL_LoadBMP("./images/enemy.bmp");
-		
-		mTexture = SDL_CreateTextureFromSurface(renderer, pixels);
+		SDL_Surface *pixels = SDL_LoadBMP("./images/enemy2.bmp");
+		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(pixels->format, 0xff, 0, 0xff));
 
+		mTexture = SDL_CreateTextureFromSurface(renderer, pixels);
+		
 		if(nullptr == mTexture){
 			SDL_Log("Could not load image");
 		}
