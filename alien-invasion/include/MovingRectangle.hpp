@@ -8,7 +8,10 @@ struct MovingRectangle{
 	MovingRectangle(SDL_Renderer *renderer){
 		
 		SDL_Surface *pixels = SDL_LoadBMP("./images/enemy2.bmp");
-		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(pixels->format, 0xff, 0, 0xff));
+		const SDL_PixelFormatDetails *formatDetails = SDL_GetPixelFormatDetails(pixels->format);
+		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(formatDetails,NULL, 193, 11, 229));
+
+		
 
 		mTexture = SDL_CreateTextureFromSurface(renderer, pixels);
 		
