@@ -58,16 +58,25 @@ struct Application{
 		}
 
 		// Init for enemies 
-
-		for(int i=0; i<20; i++){
+		int row = 1;
+		int col = 1;
+		for(int i=0; i<36; i++){
 			Sprite sp;
 			sp.CreateSprite(mRenderer, "./images/enemy2.bmp");
+			
+			if(i % 12 == 0){
+				++row;
+				col = 0;
+			}
+			sp.Move(col*40+80, row*40);
+			col++;
 			enemies.emplace_back(sp); 
 		}
 
 		// Init for hero
 		
 		hero.CreateSprite(mRenderer, "./images/hero1.bmp");
+		hero.Move(640/2 - (32/2), 440);
 
 	}
 	

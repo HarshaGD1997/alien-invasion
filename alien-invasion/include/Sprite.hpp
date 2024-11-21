@@ -24,20 +24,9 @@ struct Sprite{
 		}
 
 		SDL_DestroySurface(pixels);
-
-		mSpeed *= std::rand()%10 / 100.0f; // Randomize speed
-		mRect.x = std::rand()% 640;
-		mRect.y = std::rand() % 480;
-		//SDL_Log("%f, %f", mRect.x, mRect.y);
-		// making sure size is not 0
-
-		//mRect.w = std::rand() % 50 + 10;
-		//mRect.h = std::rand() % 50 + 10;
-
-		// handling directions
-
-		xPosDir = std::rand() % 1;
-		yPosDir = std::rand() % 1;
+		
+		xPosDir = true;
+		
 	}
 
 	~Sprite(){
@@ -47,36 +36,25 @@ struct Sprite{
 	}
 
 	void Update(float deltaTime){
-		if(mRect.x > 640.0f - mRect.w){
+		if(offset > 80){
 			xPosDir = false;	
 	}
-		if(mRect.x < 0.0f){
+		if(offset < -80){
 			xPosDir = true;
 		}
 
-		if(mRect.y > 480.0f - mRect.h){
-		
-			yPosDir = false;
-		}
-
-		if(mRect.y < 0.0f){
-			yPosDir = true;
-		}
 
 		if(xPosDir){
 			mRect.x += mSpeed * deltaTime;
+			offset += mSpeed * deltaTime;
 
 		}
 		else{
 			mRect.x -= mSpeed * deltaTime;
+			offset -= mSpeed * deltaTime;
 		}
 
-		if(yPosDir){
-			mRect.y += mSpeed * deltaTime;
-		}
-		else{
-			mRect.y -= mSpeed * deltaTime;
-		}
+		
 	
 	}
 
@@ -99,9 +77,10 @@ struct Sprite{
 
 	private:
 		// Rect x, y, w, h
-		SDL_FRect mRect{20.0f, 20.0f, 50.0f, 50.0f};
-		bool xPosDir;
+		SDL_FRect mRect{20.0f, 20.0f, 32.0f, 32.0f};
+		bool xPosDir{true};
 		bool yPosDir;
-		float mSpeed{1000.0f};
+		float offset{0};
+		float mSpeed{100.0f};
 		SDL_Texture *mTexture;
 };
