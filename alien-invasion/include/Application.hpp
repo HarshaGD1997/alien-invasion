@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 #include "Sprite.hpp"
+#include <memory>
 
 
 struct Application{
@@ -64,19 +65,25 @@ struct Application{
 			Sprite sp;
 			sp.CreateSprite(mRenderer, "./images/enemy2.bmp");
 			
+			
 			if(i % 12 == 0){
 				++row;
 				col = 0;
 			}
 			sp.Move(col*40+80, row*40);
 			col++;
-			enemies.emplace_back(sp); 
+
+			std::unique_ptr<GameEntity> ge = std::make_unique<EnemyGameEntity>(sp);
+			enemies.push_back(std::move(ge));	
 		}
 
 		// Init for hero
 		
-		hero.CreateSprite(mRenderer, "./images/hero1.bmp");
-		hero.Move(640/2 - (32/2), 440);
+		Sprite heroSprite;
+		heroSprite.CreateSprite(mRenderer, "./images/hero1.bmp");
+		heroSprite.Move(640/2 - (32/2), 440);
+
+		hero = std::make_unique <HeroGameEntity>(heroSprite);
 
 	}
 	
@@ -100,10 +107,10 @@ struct Application{
 	// render for enemies 	
 
 		for(int i=0; i < enemies.size(); i++){
-			enemies[i].Render(mRenderer);
+			enemies[i] -> Render(mRenderer);
 		}
 
-		hero.Render(mRenderer);
+		hero -> Render(mRenderer);
 		SDL_RenderPresent(mRenderer);
 
 	// render for hero
@@ -115,12 +122,12 @@ struct Application{
 
 		// updating enemies
 		for(int i=0; i < enemies.size(); i++){
-			enemies[i].Update(deltaTime);
+			enemies[i] -> Update(deltaTime);
 		}
 
 		//update hero
 
-		hero.Update(deltaTime);
+		hero -> Update(deltaTime);
 	}
 
 
@@ -164,10 +171,10 @@ struct Application{
 	// Class members
 	private:
 		// enimies 
-		std::vector<Sprite> enemies;
+		std::vector<std::unique_ptr<GameEntity>> enemies;
 		// hero
 
-		Sprite hero;
+		std::unique_ptr<GameEntity> hero;
 		bool mRun{true};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;

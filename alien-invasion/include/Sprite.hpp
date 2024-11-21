@@ -25,7 +25,7 @@ struct Sprite{
 
 		SDL_DestroySurface(pixels);
 		
-		xPosDir = true;
+	
 		
 	}
 
@@ -36,26 +36,7 @@ struct Sprite{
 	}
 
 	void Update(float deltaTime){
-		if(offset > 80){
-			xPosDir = false;	
-	}
-		if(offset < -80){
-			xPosDir = true;
-		}
-
-
-		if(xPosDir){
-			mRect.x += mSpeed * deltaTime;
-			offset += mSpeed * deltaTime;
-
-		}
-		else{
-			mRect.x -= mSpeed * deltaTime;
-			offset -= mSpeed * deltaTime;
-		}
-
 		
-	
 	}
 
 	void Render(SDL_Renderer *renderer){
@@ -68,8 +49,27 @@ struct Sprite{
 		//SDL_RenderRect(renderer, &mRect);
 	}
 
+	//void Update(float deltaTime){}
 
+	void SetX(float x){
+		mRect.x = x;
 	
+	}
+
+	void SetY(float y){
+		mRect.y = y;
+	}
+	
+	float GetX() const {
+	
+		return mRect.x;
+	}
+
+	float GetY() const {
+	
+		return mRect.y;
+	}
+
 	void Move(float x, float y){
 		mRect.x = x;
 		mRect.y = y;
@@ -78,9 +78,126 @@ struct Sprite{
 	private:
 		// Rect x, y, w, h
 		SDL_FRect mRect{20.0f, 20.0f, 32.0f, 32.0f};
-		bool xPosDir{true};
-		bool yPosDir;
-		float offset{0};
-		float mSpeed{100.0f};
+		
+	
 		SDL_Texture *mTexture;
+};
+
+struct GameEntity{
+	GameEntity(Sprite sprite){
+		
+		mSprite = sprite;
+	}
+
+	virtual ~GameEntity(){
+	
+	}
+
+	virtual void Input(){
+	
+	}
+
+	
+	virtual void Update(float deltaTime){
+		
+
+		
+	
+	}
+	virtual void Render(SDL_Renderer *renderer){
+		mSprite.Render(renderer);
+	}
+
+	protected:
+		Sprite mSprite;
+		
+		
+	
+};
+
+struct EnemyGameEntity : public GameEntity{
+
+	EnemyGameEntity(Sprite sprite) : GameEntity(sprite){ //delegating constructor
+	
+	}
+
+	virtual ~EnemyGameEntity(){
+	
+	}
+
+	virtual void Input() override{
+	
+	}
+
+	void Update(float deltaTime) override{
+		if(offset > 80){
+			xPosDir = false;	
+		}
+		if(offset < -80){
+			xPosDir = true;
+		}
+
+
+		if(xPosDir){
+			mSprite.SetX(mSprite.GetX() + mSpeed * deltaTime);
+
+			offset += mSpeed * deltaTime;
+
+		}
+		else{
+			mSprite.SetX(mSprite.GetX() - mSpeed * deltaTime);
+			offset -= mSpeed * deltaTime;
+		}
+
+		
+	
+	}
+
+	//virtual void Render(SDL_Renderer *renderer){
+	//	mSprite.Render(renderer);
+	//}
+	private:
+		
+		bool xPosDir{true};
+		float offset{0};
+		float mSpeed{100};
+
+};
+
+struct HeroGameEntity : public GameEntity{
+
+	HeroGameEntity(Sprite sprite) : GameEntity(sprite){ //delegating constructor
+	
+	}
+
+	virtual ~HeroGameEntity(){
+	
+	}
+
+	virtual void Input() override{
+		const Uint8 *state = SDL_GetKeyboardState(nullptr);
+		if(state[SDL_SCANCODE_LEFT]){
+			SDL_Log("Left key pressed");
+		
+		}
+		else if(state[SDL_SCANCODE_RIGHT]){
+			SDL_Log("right key pressed");
+		}	
+	}
+
+	void Update(float deltaTime) override{
+	
+
+		
+	
+	}
+
+	//virtual void Render(SDL_Renderer *renderer){
+	//	mSprite.Render(renderer);
+	//}
+	private:
+		
+
+		float mSpeed{10};
+
 };
