@@ -1,7 +1,8 @@
 #pragma once
 
 #include <SDL3/SDL.h>
-#include "MovingRectangle.hpp"
+#include "Sprite.hpp"
+#include <memory>
 
 
 struct Application{
@@ -57,9 +58,32 @@ struct Application{
 			SDL_Log("Failed to create renderer %s", SDL_GetError());
 		}
 
-		for(int i=0; i<20; i++){
-			mRect.emplace_back(MovingRectangle(mRenderer)); 
+		// Init for enemies 
+		int row = 1;
+		int col = 1;
+		for(int i=0; i<36; i++){
+			Sprite sp;
+			sp.CreateSprite(mRenderer, "./images/enemy2.bmp");
+			
+			
+			if(i % 12 == 0){
+				++row;
+				col = 0;
+			}
+			sp.Move(col*40+80, row*40);
+			col++;
+
+			std::unique_ptr<GameEntity> ge = std::make_unique<EnemyGameEntity>(sp);
+			enemies.push_back(std::move(ge));	
 		}
+
+		// Init for hero
+		
+		Sprite heroSprite;
+		heroSprite.CreateSprite(mRenderer, "./images/hero1.bmp");
+		heroSprite.Move(640/2 - (32/2), 440);
+
+		hero = std::make_unique <HeroGameEntity>(heroSprite);
 
 	}
 	
@@ -80,20 +104,30 @@ struct Application{
 		SDL_RenderClear(mRenderer);
 		SDL_SetRenderDrawColor(mRenderer, 0xff, 0xff, 0xff, SDL_ALPHA_OPAQUE); // setting the object color to white
 		
-		
+	// render for enemies 	
 
-		for(int i=0; i < mRect.size(); i++){
-			mRect[i].Render(mRenderer);
+		for(int i=0; i < enemies.size(); i++){
+			enemies[i] -> Render(mRenderer);
 		}
 
+		hero -> Render(mRenderer);
 		SDL_RenderPresent(mRenderer);
+
+	// render for hero
+		//hero.Render(mRenderer);
 		
 	}
 
 	void Update(float deltaTime){
-		for(int i=0; i < mRect.size(); i++){
-			mRect[i].Update(deltaTime);
+
+		// updating enemies
+		for(int i=0; i < enemies.size(); i++){
+			enemies[i] -> Update(deltaTime);
 		}
+
+		//update hero
+
+		hero -> Update(deltaTime);
 	}
 
 
@@ -136,7 +170,11 @@ struct Application{
 
 	// Class members
 	private:
-		std::vector<MovingRectangle> mRect;
+		// enimies 
+		std::vector<std::unique_ptr<GameEntity>> enemies;
+		// hero
+
+		std::unique_ptr<GameEntity> hero;
 		bool mRun{true};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;
