@@ -74,6 +74,10 @@ struct Sprite{
 		mRect.x = x;
 		mRect.y = y;
 	}	
+	
+	void Input(float deltaTime){
+	
+	}
 
 	private:
 		// Rect x, y, w, h
@@ -93,7 +97,7 @@ struct GameEntity{
 	
 	}
 
-	virtual void Input(){
+	virtual void Input(float deltaTime){
 	
 	}
 
@@ -125,7 +129,7 @@ struct EnemyGameEntity : public GameEntity{
 	
 	}
 
-	virtual void Input() override{
+	virtual void Input(float deltaTime) override{
 	
 	}
 
@@ -174,15 +178,17 @@ struct HeroGameEntity : public GameEntity{
 	
 	}
 
-	virtual void Input() override{
+	virtual void Input(float deltaTime) override{
 		const Uint8 *state = SDL_GetKeyboardState(nullptr);
-		if(state[SDL_SCANCODE_LEFT]){
-			SDL_Log("Left key pressed");
-		
+		if(state[SDL_SCANCODE_A]){
+			//SDL_Log("Left key pressed");
+			mSprite.SetX(mSprite.GetX() - mSpeed * deltaTime);
 		}
-		else if(state[SDL_SCANCODE_RIGHT]){
-			SDL_Log("right key pressed");
-		}	
+		else if(state[SDL_SCANCODE_D]){
+			//SDL_Log("right key pressed");
+			mSprite.SetX(mSprite.GetX() + mSpeed * deltaTime);
+			}
+			
 	}
 
 	void Update(float deltaTime) override{
@@ -198,6 +204,6 @@ struct HeroGameEntity : public GameEntity{
 	private:
 		
 
-		float mSpeed{10};
+		float mSpeed{150};
 
 };

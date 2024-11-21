@@ -88,13 +88,17 @@ struct Application{
 	}
 	
 	// Input method
-	void Input(){
+	void Input(float deltaTime){
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
 			if(event.type == SDL_EVENT_QUIT){
 				mRun = false;
 			}
 		}
+		// Handling SDL_GetKeyboardState after SDL_Poll
+		
+		hero -> Input(deltaTime);
+
 	}
 
 	// Rendering section
@@ -141,7 +145,7 @@ struct Application{
 
 		while(mRun){
 			Uint64 startOfFrame = SDL_GetTicks();
-			Input();
+			Input(deltaTime);
 			Update(deltaTime);
 			Render();
 			
