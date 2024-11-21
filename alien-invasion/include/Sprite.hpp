@@ -3,11 +3,15 @@
 #include <vector>
 
 
-struct MovingRectangle{
+struct Sprite{
+
+	Sprite(){
 	
-	MovingRectangle(SDL_Renderer *renderer){
+	}
+	
+	void CreateSprite(SDL_Renderer *renderer, const char *filePath){
 		
-		SDL_Surface *pixels = SDL_LoadBMP("./images/enemy2.bmp");
+		SDL_Surface *pixels = SDL_LoadBMP(filePath);
 		const SDL_PixelFormatDetails *formatDetails = SDL_GetPixelFormatDetails(pixels->format);
 		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(formatDetails,NULL, 193, 11, 229));
 
@@ -27,8 +31,8 @@ struct MovingRectangle{
 		//SDL_Log("%f, %f", mRect.x, mRect.y);
 		// making sure size is not 0
 
-		mRect.w = std::rand() % 50 + 10;
-		mRect.h = std::rand() % 50 + 10;
+		//mRect.w = std::rand() % 50 + 10;
+		//mRect.h = std::rand() % 50 + 10;
 
 		// handling directions
 
@@ -36,7 +40,7 @@ struct MovingRectangle{
 		yPosDir = std::rand() % 1;
 	}
 
-	~MovingRectangle(){
+	~Sprite(){
 	
 		// TODO: Resource management
 		//SDL_DestroyTexture(mTexture);
@@ -83,16 +87,19 @@ struct MovingRectangle{
 		else{
 			SDL_RenderTexture(renderer, mTexture, nullptr, &mRect);
 		}
-		SDL_RenderRect(renderer, &mRect);
+		//SDL_RenderRect(renderer, &mRect);
 	}
 
 
 	
-	
+	void Move(float x, float y){
+		mRect.x = x;
+		mRect.y = y;
+	}	
 
 	private:
 		// Rect x, y, w, h
-		SDL_FRect mRect{20.0f, 20.0f, 50.0f, 100.0f};
+		SDL_FRect mRect{20.0f, 20.0f, 50.0f, 50.0f};
 		bool xPosDir;
 		bool yPosDir;
 		float mSpeed{1000.0f};

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL3/SDL.h>
-#include "MovingRectangle.hpp"
+#include "Sprite.hpp"
 
 
 struct Application{
@@ -57,9 +57,17 @@ struct Application{
 			SDL_Log("Failed to create renderer %s", SDL_GetError());
 		}
 
+		// Init for enemies 
+
 		for(int i=0; i<20; i++){
-			mRect.emplace_back(MovingRectangle(mRenderer)); 
+			Sprite sp;
+			sp.CreateSprite(mRenderer, "./images/enemy2.bmp");
+			enemies.emplace_back(sp); 
 		}
+
+		// Init for hero
+		
+		hero.CreateSprite(mRenderer, "./images/hero1.bmp");
 
 	}
 	
@@ -80,20 +88,30 @@ struct Application{
 		SDL_RenderClear(mRenderer);
 		SDL_SetRenderDrawColor(mRenderer, 0xff, 0xff, 0xff, SDL_ALPHA_OPAQUE); // setting the object color to white
 		
-		
+	// render for enemies 	
 
-		for(int i=0; i < mRect.size(); i++){
-			mRect[i].Render(mRenderer);
+		for(int i=0; i < enemies.size(); i++){
+			enemies[i].Render(mRenderer);
 		}
 
+		hero.Render(mRenderer);
 		SDL_RenderPresent(mRenderer);
+
+	// render for hero
+		//hero.Render(mRenderer);
 		
 	}
 
 	void Update(float deltaTime){
-		for(int i=0; i < mRect.size(); i++){
-			mRect[i].Update(deltaTime);
+
+		// updating enemies
+		for(int i=0; i < enemies.size(); i++){
+			enemies[i].Update(deltaTime);
 		}
+
+		//update hero
+
+		hero.Update(deltaTime);
 	}
 
 
@@ -136,7 +154,11 @@ struct Application{
 
 	// Class members
 	private:
-		std::vector<MovingRectangle> mRect;
+		// enimies 
+		std::vector<Sprite> enemies;
+		// hero
+
+		Sprite hero;
 		bool mRun{true};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;
