@@ -30,7 +30,7 @@ struct Sprite{
 		*/
 		
 		Uint32 colorKey1 = SDL_MapRGB(formatDetails, NULL, 193, 11, 229);
-		Uint32 colorKey2 = SDL_MapRGB(formatDetails, NULL, 0xff, 0, 0xff);
+		
 
 		
 		if(SDL_MUSTLOCK(pixels)){
@@ -38,7 +38,7 @@ struct Sprite{
 		}
 
 		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, colorKey1);
-		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, colorKey2);
+		//SDL_SetSurfaceColorKey(pixels, SDL_TRUE, colorKey2);
 
 		if(SDL_MUSTLOCK(pixels)){
 			SDL_UnlockSurface(pixels);
@@ -254,7 +254,7 @@ struct HeroGameEntity : public GameEntity{
 	HeroGameEntity(SDL_Renderer *renderer, Sprite sprite) : GameEntity(sprite){ //delegating constructor
 
 		Sprite sp;
-		sp.CreateSprite(renderer,"./images/rocket.bmp");
+		sp.CreateSprite(renderer,"./images/bulletImg.bmp");
 		mProjectile = std::make_unique<Projectile>(sp);
 	}
 
