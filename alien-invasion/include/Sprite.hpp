@@ -122,6 +122,10 @@ struct Sprite{
 	
 	}
 
+	SDL_FRect GetRectangle const()
+		return mRect;
+	}
+
 	private:
 		
 		// Rect x, y, w, h
@@ -205,6 +209,15 @@ struct Projectile : public GameEntity{
 		if(mSprite.GetY() < 0.0f || mSpeed > 480.0f){
 			mIsFiring = false;
 		}
+	
+	}
+
+	// Collision detection
+
+	bool TestAgainst(GameEntity e){
+		SDL_FRect source = e.mSprite.GetRectangle();
+		SDL_FRect us = mSprite.GetRectangle();
+		return (SDL_GetRectIntersectionFloat(&source, &us, nullptr));
 	}
 
 
