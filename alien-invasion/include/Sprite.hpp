@@ -76,6 +76,15 @@ struct Sprite{
 	}
 
 	//void Update(float deltaTime){}
+	//
+	
+	void SetW(float w){
+		mRect.w = w;
+	}
+
+	void SetH(float h){
+		mRect.h = h;
+	}
 
 	void SetX(float x){
 		mRect.x = x;
@@ -94,6 +103,14 @@ struct Sprite{
 	float GetY() const {
 	
 		return mRect.y;
+	}
+
+	float GetW() const {
+		return mRect.x;
+	}
+
+	float GetH() const{
+		return mRect.h;
 	}
 
 	void Move(float x, float y){

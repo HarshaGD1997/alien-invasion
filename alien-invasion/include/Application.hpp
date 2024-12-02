@@ -81,6 +81,9 @@ struct Application{
 		
 		Sprite heroSprite;
 		heroSprite.CreateSprite(mRenderer, "./images/hero1.bmp");
+		heroSprite.SetW(heroSprite.GetW() + 30);
+		heroSprite.SetH(heroSprite.GetH() + 30);
+		
 		heroSprite.Move(640/2 - (32/2), 440);
 
 		hero = std::make_unique <HeroGameEntity>(mRenderer, heroSprite);
