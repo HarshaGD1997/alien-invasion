@@ -14,8 +14,8 @@ struct Sprite{
 		
 		SDL_Surface *pixels = SDL_LoadBMP(filePath);
 		const SDL_PixelFormatDetails *formatDetails = SDL_GetPixelFormatDetails(pixels->format);
-		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(formatDetails,NULL, 193, 11, 229));
-		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(formatDetails,NULL, 0xff, 0, 0xff));
+		/*SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(formatDetails,NULL, 193, 11, 229));
+		
 
 		
 
@@ -27,7 +27,31 @@ struct Sprite{
 
 		SDL_DestroySurface(pixels);
 		
-	
+		*/
+		
+		Uint32 colorKey1 = SDL_MapRGB(formatDetails, NULL, 193, 11, 229);
+		Uint32 colorKey2 = SDL_MapRGB(formatDetails, NULL, 0xff, 0, 0xff);
+
+		
+		if(SDL_MUSTLOCK(pixels)){
+			SDL_LockSurface(pixels);
+		}
+
+		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, colorKey1);
+		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, colorKey2);
+
+		if(SDL_MUSTLOCK(pixels)){
+			SDL_UnlockSurface(pixels);
+		}
+		
+		//SDL_SetSurfaceBlendMode(pixels, SDL_BLENDMODE_NONE);
+		mTexture = SDL_CreateTextureFromSurface(renderer, pixels);
+
+		if(nullptr == mTexture){
+			SDL_Log("Could not create texture %s",SDL_GetError());
+		}
+
+		SDL_DestroySurface(pixels);
 		
 	}
 
@@ -82,6 +106,7 @@ struct Sprite{
 	}
 
 	private:
+		
 		// Rect x, y, w, h
 		SDL_FRect mRect{20.0f, 20.0f, 32.0f, 32.0f};
 		
