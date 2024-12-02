@@ -2,7 +2,7 @@
 
 #include <SDL3/SDL.h>
 #include "Sprite.hpp"
-#include <memory>
+
 
 
 struct Application{
@@ -83,7 +83,7 @@ struct Application{
 		heroSprite.CreateSprite(mRenderer, "./images/hero1.bmp");
 		heroSprite.Move(640/2 - (32/2), 440);
 
-		hero = std::make_unique <HeroGameEntity>(heroSprite);
+		hero = std::make_unique <HeroGameEntity>(mRenderer, heroSprite);
 
 	}
 	

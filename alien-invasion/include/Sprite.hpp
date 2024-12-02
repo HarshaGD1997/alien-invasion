@@ -1,6 +1,7 @@
 
 #include<cstdlib>
 #include <vector>
+#include <memory>
 
 
 struct Sprite{
@@ -14,6 +15,7 @@ struct Sprite{
 		SDL_Surface *pixels = SDL_LoadBMP(filePath);
 		const SDL_PixelFormatDetails *formatDetails = SDL_GetPixelFormatDetails(pixels->format);
 		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(formatDetails,NULL, 193, 11, 229));
+		SDL_SetSurfaceColorKey(pixels, SDL_TRUE, SDL_MapRGB(formatDetails,NULL, 0xff, 0, 0xff));
 
 		
 
@@ -109,14 +111,68 @@ struct GameEntity{
 	
 	}
 	virtual void Render(SDL_Renderer *renderer){
-		mSprite.Render(renderer);
+		if(mRenderable){
+			mSprite.Render(renderer);
+		}
+		else{
+		
+		}
 	}
 
 	protected:
 		Sprite mSprite;
-		
+		bool mRenderable{true};	
 		
 	
+};
+
+struct Projectile : public GameEntity{
+
+	Projectile(Sprite sprite) : GameEntity(sprite){
+		timeSinceLastLaunch = SDL_GetTicks();
+		mRenderable = false;
+	}
+
+
+
+	void Launch(float x, float y, bool yDirIsUp){
+		// Get current time and compute the delay for the projectile
+		if(SDL_GetTicks() - timeSinceLastLaunch > 3000){
+			timeSinceLastLaunch = SDL_GetTicks();
+			mIsFiring=true;
+			mYDirUp = yDirIsUp;
+			mSprite.Move(x,y);	
+		}
+		
+	}
+
+	void Update(float deltaTime) override{
+		if(mIsFiring){
+			mRenderable = true;
+			if(true == mYDirUp){
+				mSprite.SetY(mSprite.GetY() - mSpeed * deltaTime);
+			}
+			else{
+				mSprite.SetY(mSprite.GetY() + mSpeed * deltaTime);
+			}
+		}
+		else{
+			mRenderable = false;
+		}
+
+		if(mSprite.GetY() < 0.0f || mSpeed > 480.0f){
+			mIsFiring = false;
+		}
+	}
+
+
+
+	private:
+		//Sprite mSprite;
+		float mSpeed{300.0f};
+		bool mYDirUp{true};
+		bool mIsFiring{false};
+		Uint64 timeSinceLastLaunch;
 };
 
 struct EnemyGameEntity : public GameEntity{
@@ -170,8 +226,11 @@ struct EnemyGameEntity : public GameEntity{
 
 struct HeroGameEntity : public GameEntity{
 
-	HeroGameEntity(Sprite sprite) : GameEntity(sprite){ //delegating constructor
-	
+	HeroGameEntity(SDL_Renderer *renderer, Sprite sprite) : GameEntity(sprite){ //delegating constructor
+
+		Sprite sp;
+		sp.CreateSprite(renderer,"./images/rocket.bmp");
+		mProjectile = std::make_unique<Projectile>(sp);
 	}
 
 	virtual ~HeroGameEntity(){
@@ -187,23 +246,30 @@ struct HeroGameEntity : public GameEntity{
 		else if(state[SDL_SCANCODE_D]){
 			//SDL_Log("right key pressed");
 			mSprite.SetX(mSprite.GetX() + mSpeed * deltaTime);
-			}
+		}
+
+		if(state[SDL_SCANCODE_RETURN]){
+			SDL_Log("key");
+			mProjectile -> Launch(mSprite.GetX(), mSprite.GetY(), true);	
+		
+		}
 			
 	}
 
 	void Update(float deltaTime) override{
-	
+		mProjectile -> Update(deltaTime);	
 
 		
 	
 	}
 
-	//virtual void Render(SDL_Renderer *renderer){
-	//	mSprite.Render(renderer);
-	//}
+	virtual void Render(SDL_Renderer *renderer){
+		mProjectile->Render(renderer);
+		mSprite.Render(renderer);
+	}
 	private:
 		
-
+		
 		float mSpeed{150};
-
+		std::unique_ptr<Projectile> mProjectile;
 };
