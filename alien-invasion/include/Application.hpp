@@ -2,7 +2,7 @@
 
 #include <SDL3/SDL.h>
 #include "Sprite.hpp"
-#include <memory>
+
 
 
 struct Application{
@@ -81,20 +81,27 @@ struct Application{
 		
 		Sprite heroSprite;
 		heroSprite.CreateSprite(mRenderer, "./images/hero1.bmp");
+		heroSprite.SetW(heroSprite.GetW() + 30);
+		heroSprite.SetH(heroSprite.GetH() + 30);
+		
 		heroSprite.Move(640/2 - (32/2), 440);
 
-		hero = std::make_unique <HeroGameEntity>(heroSprite);
+		hero = std::make_unique <HeroGameEntity>(mRenderer, heroSprite);
 
 	}
 	
 	// Input method
-	void Input(){
+	void Input(float deltaTime){
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
 			if(event.type == SDL_EVENT_QUIT){
 				mRun = false;
 			}
 		}
+		// Handling SDL_GetKeyboardState after SDL_Poll
+		
+		hero -> Input(deltaTime);
+
 	}
 
 	// Rendering section
@@ -141,7 +148,7 @@ struct Application{
 
 		while(mRun){
 			Uint64 startOfFrame = SDL_GetTicks();
-			Input();
+			Input(deltaTime);
 			Update(deltaTime);
 			Render();
 			
