@@ -122,7 +122,8 @@ struct Sprite{
 	
 	}
 
-	SDL_FRect GetRectangle const()
+	
+	SDL_FRect GetRectangle(){
 		return mRect;
 	}
 
@@ -164,6 +165,16 @@ struct GameEntity{
 		
 		}
 	}
+
+	// Collision detection
+
+	bool Intersects(GameEntity e){
+		SDL_FRect source = e.mSprite.GetRectangle();
+		SDL_FRect us = mSprite.GetRectangle();
+		return (SDL_GetRectIntersectionFloat(&source, &us, nullptr));
+	}
+
+	
 
 	protected:
 		Sprite mSprite;
@@ -212,13 +223,7 @@ struct Projectile : public GameEntity{
 	
 	}
 
-	// Collision detection
 
-	bool TestAgainst(GameEntity e){
-		SDL_FRect source = e.mSprite.GetRectangle();
-		SDL_FRect us = mSprite.GetRectangle();
-		return (SDL_GetRectIntersectionFloat(&source, &us, nullptr));
-	}
 
 
 
