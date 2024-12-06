@@ -130,6 +130,11 @@ struct Application{
 		// updating enemies
 		for(int i=0; i < enemies.size(); i++){
 			enemies[i] -> Update(deltaTime);
+			bool result = enemies[i] -> Intersects(hero->GetProjectile());
+
+			if(result){
+				enemies[i] -> SetRenderable(!(result));
+			}
 		}
 
 		//update hero
@@ -181,7 +186,7 @@ struct Application{
 		std::vector<std::unique_ptr<GameEntity>> enemies;
 		// hero
 
-		std::unique_ptr<GameEntity> hero;
+		std::unique_ptr<HeroGameEntity> hero;
 		bool mRun{true};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;
