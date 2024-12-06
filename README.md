@@ -12,7 +12,7 @@
 + Score Tracker
 + Game reset
 + Refactor code
-+ Add features
++ Customize
 
 
 
