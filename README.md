@@ -1,6 +1,6 @@
 # Alien Invasion 
 ## Project made using SDL3 
 
-### To-do List : 
+### **To-do List :** 
 
-    * Score Tracker
+    -Score Tracker
