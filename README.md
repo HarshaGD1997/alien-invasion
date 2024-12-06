@@ -10,3 +10,9 @@
 + ~~FPS Capping (optimise the frame rate)~~
 + ~~Collision Detection~~
 + Score Tracker
++ Game reset
++ Refactor code
++ Add features
+
+
+
