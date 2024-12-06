@@ -166,12 +166,18 @@ struct GameEntity{
 		}
 	}
 
+	void SetRenderable(bool collVal){
+		//mRenderable = !(collVal);
+		mRenderable = collVal;
+	}
+
 	// Collision detection
 
-	bool Intersects(GameEntity e){
-		SDL_FRect source = e.mSprite.GetRectangle();
+	bool Intersects(std::shared_ptr<GameEntity> e){
+		SDL_FRect source = e->mSprite.GetRectangle();
 		SDL_FRect us = mSprite.GetRectangle();
-		return (SDL_GetRectIntersectionFloat(&source, &us, nullptr));
+		SDL_FRect result;
+		return (SDL_GetRectIntersectionFloat(&source, &us, &result));
 	}
 
 	
@@ -290,7 +296,7 @@ struct HeroGameEntity : public GameEntity{
 
 		Sprite sp;
 		sp.CreateSprite(renderer,"./images/bulletImg.bmp");
-		mProjectile = std::make_unique<Projectile>(sp);
+		mProjectile = std::make_shared<Projectile>(sp);
 	}
 
 	virtual ~HeroGameEntity(){
@@ -309,7 +315,7 @@ struct HeroGameEntity : public GameEntity{
 		}
 
 		if(state[SDL_SCANCODE_RETURN]){
-			SDL_Log("key");
+			//SDL_Log("key");
 			mProjectile -> Launch(mSprite.GetX(), mSprite.GetY(), true);	
 		
 		}
@@ -327,9 +333,14 @@ struct HeroGameEntity : public GameEntity{
 		mProjectile->Render(renderer);
 		mSprite.Render(renderer);
 	}
+	
+	std::shared_ptr<Projectile>GetProjectile() const{
+		return mProjectile;
+	}
+
 	private:
 		
 		
 		float mSpeed{150};
-		std::unique_ptr<Projectile> mProjectile;
+		std::shared_ptr<Projectile> mProjectile;
 };
