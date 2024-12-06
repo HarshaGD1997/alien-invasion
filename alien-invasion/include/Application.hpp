@@ -73,7 +73,7 @@ struct Application{
 			sp.Move(col*40+80, row*40);
 			col++;
 
-			std::unique_ptr<GameEntity> ge = std::make_unique<EnemyGameEntity>(sp);
+			std::unique_ptr<EnemyGameEntity> ge = std::make_unique<EnemyGameEntity>(mRenderer, sp);
 			enemies.push_back(std::move(ge));	
 		}
 
@@ -131,9 +131,13 @@ struct Application{
 		for(int i=0; i < enemies.size(); i++){
 			enemies[i] -> Update(deltaTime);
 			bool result = enemies[i] -> Intersects(hero->GetProjectile());
-
+			bool GameOver = hero -> Intersects(enemies[i]->GetProjectile());
 			if(result){
 				enemies[i] -> SetRenderable(!(result));
+			}
+
+			if(GameOver){
+				SDL_Log("You died");
 			}
 		}
 
@@ -183,7 +187,7 @@ struct Application{
 	// Class members
 	private:
 		// enimies 
-		std::vector<std::unique_ptr<GameEntity>> enemies;
+		std::vector<std::unique_ptr<EnemyGameEntity>> enemies;
 		// hero
 
 		std::unique_ptr<HeroGameEntity> hero;
