@@ -63,6 +63,7 @@ struct Application{
 		int col = 1;
 		for(int i=0; i<36; i++){
 			Sprite sp;
+			
 			sp.CreateSprite(mRenderer, "./images/enemy2.bmp");
 			
 			
@@ -80,9 +81,9 @@ struct Application{
 		// Init for hero
 		
 		Sprite heroSprite;
-		heroSprite.CreateSprite(mRenderer, "./images/hero1.bmp");
-		heroSprite.SetW(heroSprite.GetW() + 30);
-		heroSprite.SetH(heroSprite.GetH() + 30);
+		heroSprite.CreateSprite(mRenderer, "./images/enemy2.bmp");
+		heroSprite.SetW(heroSprite.GetW()+30);
+		heroSprite.SetH(heroSprite.GetH()+10);
 		
 		heroSprite.Move(640/2 - (32/2), 440);
 
@@ -130,14 +131,17 @@ struct Application{
 		// updating enemies
 		for(int i=0; i < enemies.size(); i++){
 			enemies[i] -> Update(deltaTime);
-			bool result = enemies[i] -> Intersects(hero->GetProjectile());
+			bool enemyResult = enemies[i] -> Intersects(hero->GetProjectile());
 			bool GameOver = hero -> Intersects(enemies[i]->GetProjectile());
-			if(result){
-				enemies[i] -> SetRenderable(!(result));
+			if(enemyResult && enemies[i]->IsRenderable()==true){
+				enemies[i] -> SetRenderable(false);
+				mPoints += 1;
 			}
 
 			if(GameOver){
 				SDL_Log("You died");
+				SDL_Log("Score : %f",mPoints);
+				mRun = false;
 			}
 		}
 
@@ -192,6 +196,7 @@ struct Application{
 
 		std::unique_ptr<HeroGameEntity> hero;
 		bool mRun{true};
+		float mPoints{0.0f};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;
 		

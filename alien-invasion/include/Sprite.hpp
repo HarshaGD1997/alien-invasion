@@ -175,7 +175,9 @@ struct GameEntity{
 		return (SDL_GetRectIntersectionFloat(&source, &us, &result));
 	}
 
-	
+	bool IsRenderable() const{
+		return mRenderable;
+	}	
 
 	protected:
 		Sprite mSprite;
@@ -239,7 +241,7 @@ struct Projectile : public GameEntity{
 
 	private:
 		//Sprite mSprite;
-		float mSpeed{300.0f};
+		float mSpeed{200.0f};
 		bool mYDirUp{true};
 		bool mIsFiring{false};
 		Uint64 timeSinceLastLaunch;
@@ -250,11 +252,12 @@ struct EnemyGameEntity : public GameEntity{
 	EnemyGameEntity(SDL_Renderer *renderer, Sprite sprite) : GameEntity(sprite){ //delegating constructor
 		Sprite sp;
 		sp.CreateSprite(renderer, "./images/bulletImg.bmp");
-		mProjectile = std::make_shared<Projectile>(sp);	
+		mProjectile = std::make_shared<Projectile>(sp);
+			
 
 		// Random Launch time
 
-		mMinLaunchTime = std::rand() % 8000;
+		mMinLaunchTime += std::rand() % 10000;
 	}
 
 	virtual ~EnemyGameEntity(){
@@ -316,7 +319,7 @@ struct EnemyGameEntity : public GameEntity{
 		bool xPosDir{true};
 		float offset{0};
 		float mSpeed{100};
-		float mMinLaunchTime{4000.0f};
+		float mMinLaunchTime{5000.0f};
 
 };
 
@@ -352,7 +355,7 @@ struct HeroGameEntity : public GameEntity{
 			
 	}
 
-	void Update(float deltaTime) override{
+	virtual void Update(float deltaTime) override{
 		mProjectile -> Update(deltaTime);	
 
 		
@@ -371,6 +374,6 @@ struct HeroGameEntity : public GameEntity{
 	private:
 		
 		
-		float mSpeed{150};
+		float mSpeed{200};
 		std::shared_ptr<Projectile> mProjectile;
 };
