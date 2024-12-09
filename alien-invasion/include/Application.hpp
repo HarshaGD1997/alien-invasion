@@ -81,9 +81,9 @@ struct Application{
 		// Init for hero
 		
 		Sprite heroSprite;
-		heroSprite.CreateSprite(mRenderer, "./images/enemy2.bmp");
-		heroSprite.SetW(heroSprite.GetW()+30);
-		heroSprite.SetH(heroSprite.GetH()+10);
+		heroSprite.CreateSprite(mRenderer, "./images/heroImg.bmp");
+		heroSprite.SetW(heroSprite.GetW()+40);
+		heroSprite.SetH(heroSprite.GetH()+30);
 		
 		heroSprite.Move(640/2 - (32/2), 440);
 

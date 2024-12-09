@@ -340,10 +340,19 @@ struct HeroGameEntity : public GameEntity{
 		const Uint8 *state = SDL_GetKeyboardState(nullptr);
 		if(state[SDL_SCANCODE_A]){
 			//SDL_Log("Left key pressed");
+			if( mSprite.GetX() <= 0){
+				//mSprite.SetX(mSprite.GetX());
+				//SDL_Log("%f",mSprite.GetX());
+				mSprite.SetX(640);
+			} 
 			mSprite.SetX(mSprite.GetX() - mSpeed * deltaTime);
 		}
 		else if(state[SDL_SCANCODE_D]){
 			//SDL_Log("right key pressed");
+			if( mSprite.GetX() >= (640)){
+				//SDL_Log("%f",mSprite.GetX());
+				mSprite.SetX(0);
+			}
 			mSprite.SetX(mSprite.GetX() + mSpeed * deltaTime);
 		}
 
