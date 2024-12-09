@@ -82,8 +82,8 @@ struct Application{
 		
 		Sprite heroSprite;
 		heroSprite.CreateSprite(mRenderer, "./images/heroImg.bmp");
-		heroSprite.SetW(heroSprite.GetW()+40);
-		heroSprite.SetH(heroSprite.GetH()+30);
+		//heroSprite.SetW(heroSprite.GetW()+40);
+		//heroSprite.SetH(heroSprite.GetH()+30);
 		
 		heroSprite.Move(640/2 - (32/2), 440);
 
@@ -133,7 +133,7 @@ struct Application{
 			enemies[i] -> Update(deltaTime);
 			bool enemyResult = enemies[i] -> Intersects(hero->GetProjectile());
 			bool GameOver = hero -> Intersects(enemies[i]->GetProjectile());
-			if(enemyResult && enemies[i]->IsRenderable()==true){
+			if(true==enemyResult && true==enemies[i]->IsRenderable()){
 				enemies[i] -> SetRenderable(false);
 				mPoints += 1;
 			}

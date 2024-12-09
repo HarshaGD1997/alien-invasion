@@ -251,7 +251,7 @@ struct EnemyGameEntity : public GameEntity{
 
 	EnemyGameEntity(SDL_Renderer *renderer, Sprite sprite) : GameEntity(sprite){ //delegating constructor
 		Sprite sp;
-		sp.CreateSprite(renderer, "./images/bulletImg.bmp");
+		sp.CreateSprite(renderer, "./images/bulletNew.bmp");
 		mProjectile = std::make_shared<Projectile>(sp);
 			
 
@@ -328,8 +328,9 @@ struct HeroGameEntity : public GameEntity{
 	HeroGameEntity(SDL_Renderer *renderer, Sprite sprite) : GameEntity(sprite){ //delegating constructor
 
 		Sprite sp;
-		sp.CreateSprite(renderer,"./images/bulletImg.bmp");
+		sp.CreateSprite(renderer,"./images/bulletNew.bmp");
 		mProjectile = std::make_shared<Projectile>(sp);
+		sp.SetW(1000);
 	}
 
 	virtual ~HeroGameEntity(){
@@ -383,6 +384,6 @@ struct HeroGameEntity : public GameEntity{
 	private:
 		
 		
-		float mSpeed{200};
+		float mSpeed{100};
 		std::shared_ptr<Projectile> mProjectile;
 };
