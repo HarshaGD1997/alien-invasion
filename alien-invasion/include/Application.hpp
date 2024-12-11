@@ -63,7 +63,7 @@ struct Application{
 		}
 
 		// Init for enemies 
-		int row = 1;
+		/*int row = 1;
 		int col = 1;
 		for(int i=0; i<100; i++){
 			Sprite sp;
@@ -81,7 +81,38 @@ struct Application{
 
 			std::unique_ptr<EnemyGameEntity> ge = std::make_unique<EnemyGameEntity>(mRenderer, sp);
 			enemies.push_back(std::move(ge));	
-		}
+		}*/
+
+
+		int maxCols = 10;
+		int enemySpacing = 50;
+		int enemyW = 32;
+		int enemyH = 32;
+
+		int gridW = maxCols * (enemyW + enemySpacing) - enemySpacing;
+		int gridH = (100 / maxCols) * (enemyH + enemySpacing) - enemySpacing;
+		int startX = (mScreenWidth - gridW) /2;
+		int startY = (mScreenHeight - gridH) / 2;
+
+		
+		for (int i=0; i<50; i++){
+		
+			Sprite sp;
+			sp.CreateSprite(mRenderer,"./images/enemy2.bmp");
+			//sp.SetW(sp.GetW() + 20);
+			//sp.SetH(sp.GetH() + 20);
+			int row = i / maxCols;
+			int col = i % maxCols;
+
+			int xPos = startX + col * (enemyW + enemySpacing);
+			int yPos = startY + row * (enemyH + enemySpacing);
+
+			sp.Move(xPos, yPos);
+
+			std::unique_ptr<EnemyGameEntity> ge = std::make_unique<EnemyGameEntity>(mRenderer, sp);
+			enemies.push_back(std::move(ge));
+
+		}		
 
 		// Init for hero
 		
