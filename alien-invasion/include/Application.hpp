@@ -42,12 +42,16 @@ struct Application{
 
 	void StartUp(){
 		// creating an SDL Window
-		mWindow = SDL_CreateWindow("Alien Invasion", 640, 480, SDL_EVENT_WINDOW_SHOWN);
+		mWindow = SDL_CreateWindow("Alien Invasion", mScreenWidth, mScreenHeight, SDL_EVENT_WINDOW_SHOWN | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE);
 		
 		if(nullptr == mWindow){
 			SDL_Log("Error in creating SDL_Window");
 		}
 
+		
+
+		SDL_GetWindowSize(mWindow, &mScreenWidth, &mScreenHeight);
+		SDL_Log("%d %d", mScreenWidth, mScreenHeight);
 
 		// Creating a SDL Renderer 
 		// Making use of Hardware acceleration
@@ -61,17 +65,18 @@ struct Application{
 		// Init for enemies 
 		int row = 1;
 		int col = 1;
-		for(int i=0; i<36; i++){
+		for(int i=0; i<100; i++){
 			Sprite sp;
 			
 			sp.CreateSprite(mRenderer, "./images/enemy2.bmp");
-			
-			
-			if(i % 12 == 0){
+			sp.SetW(sp.GetW() + 15);	
+			sp.SetH(sp.GetH() + 15);
+				
+			if(i % 38 == 0){
 				++row;
 				col = 0;
 			}
-			sp.Move(col*40+80, row*40);
+			sp.Move(col*50+80, row*50);
 			col++;
 
 			std::unique_ptr<EnemyGameEntity> ge = std::make_unique<EnemyGameEntity>(mRenderer, sp);
@@ -82,8 +87,8 @@ struct Application{
 		
 		Sprite heroSprite;
 		heroSprite.CreateSprite(mRenderer, "./images/heroImg.bmp");
-		//heroSprite.SetW(heroSprite.GetW()+40);
-		//heroSprite.SetH(heroSprite.GetH()+30);
+		heroSprite.SetW(heroSprite.GetW()+20);
+		heroSprite.SetH(heroSprite.GetH()+20);
 		
 		heroSprite.Move(640/2 - (32/2), 440);
 
@@ -199,6 +204,7 @@ struct Application{
 		float mPoints{0.0f};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;
-		
+		int mScreenWidth = 0;
+		int mScreenHeight = 0;	
 		
 };

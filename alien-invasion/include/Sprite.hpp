@@ -130,7 +130,7 @@ struct Sprite{
 	private:
 		
 		// Rect x, y, w, h
-		SDL_FRect mRect{20.0f, 20.0f, 32.0f, 32.0f};
+		SDL_FRect mRect{20.0f, 20.0f, 10.0f, 10.0f};
 		
 	
 		SDL_Texture *mTexture;
@@ -254,7 +254,7 @@ struct EnemyGameEntity : public GameEntity{
 		sp.CreateSprite(renderer, "./images/bulletNew.bmp");
 		mProjectile = std::make_shared<Projectile>(sp);
 			
-
+		
 		// Random Launch time
 
 		mMinLaunchTime += std::rand() % 10000;
@@ -330,7 +330,7 @@ struct HeroGameEntity : public GameEntity{
 		Sprite sp;
 		sp.CreateSprite(renderer,"./images/bulletNew.bmp");
 		mProjectile = std::make_shared<Projectile>(sp);
-		sp.SetW(1000);
+		
 	}
 
 	virtual ~HeroGameEntity(){
