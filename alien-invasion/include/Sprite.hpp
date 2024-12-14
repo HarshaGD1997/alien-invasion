@@ -130,7 +130,7 @@ struct Sprite{
 	private:
 		
 		// Rect x, y, w, h
-		SDL_FRect mRect{20.0f, 20.0f, 32.0f, 32.0f};
+		SDL_FRect mRect{20.0f, 20.0f, 10.0f, 10.0f};
 		
 	
 		SDL_Texture *mTexture;
@@ -254,7 +254,7 @@ struct EnemyGameEntity : public GameEntity{
 		sp.CreateSprite(renderer, "./images/bulletNew.bmp");
 		mProjectile = std::make_shared<Projectile>(sp);
 			
-
+		
 		// Random Launch time
 
 		mMinLaunchTime += std::rand() % 10000;
@@ -325,12 +325,14 @@ struct EnemyGameEntity : public GameEntity{
 
 struct HeroGameEntity : public GameEntity{
 
-	HeroGameEntity(SDL_Renderer *renderer, Sprite sprite) : GameEntity(sprite){ //delegating constructor
-
+	HeroGameEntity(SDL_Renderer *renderer, Sprite sprite, int mScreenWidth, int mScreenHeight) : GameEntity(sprite){ //delegating constructor
+		
+		mScreenW = mScreenWidth;
+		mScreenH = mScreenHeight;
 		Sprite sp;
 		sp.CreateSprite(renderer,"./images/bulletNew.bmp");
 		mProjectile = std::make_shared<Projectile>(sp);
-		sp.SetW(1000);
+		
 	}
 
 	virtual ~HeroGameEntity(){
@@ -344,13 +346,13 @@ struct HeroGameEntity : public GameEntity{
 			if( mSprite.GetX() <= 0){
 				//mSprite.SetX(mSprite.GetX());
 				//SDL_Log("%f",mSprite.GetX());
-				mSprite.SetX(640);
+				mSprite.SetX(mScreenW-mSprite.GetW());
 			} 
 			mSprite.SetX(mSprite.GetX() - mSpeed * deltaTime);
 		}
 		else if(state[SDL_SCANCODE_D]){
 			//SDL_Log("right key pressed");
-			if( mSprite.GetX() >= (640)){
+			if( mSprite.GetX() >= (mScreenW)){
 				//SDL_Log("%f",mSprite.GetX());
 				mSprite.SetX(0);
 			}
@@ -383,7 +385,9 @@ struct HeroGameEntity : public GameEntity{
 
 	private:
 		
-		
+		int mScreenW;
+		int mScreenH;
+			
 		float mSpeed{100};
 		std::shared_ptr<Projectile> mProjectile;
 };
