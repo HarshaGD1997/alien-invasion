@@ -130,7 +130,7 @@ struct Sprite{
 	private:
 		
 		// Rect x, y, w, h
-		SDL_FRect mRect{20.0f, 20.0f, 32.0f, 32.0f};
+		SDL_FRect mRect{20.0f, 20.0f, 10.0f, 10.0f};
 		
 	
 		SDL_Texture *mTexture;
@@ -158,12 +158,7 @@ struct GameEntity{
 	
 	}
 	virtual void Render(SDL_Renderer *renderer){
-		if(mRenderable){
-			mSprite.Render(renderer);
-		}
-		else{
-		
-		}
+
 	}
 
 	void SetRenderable(bool collVal){
@@ -180,7 +175,9 @@ struct GameEntity{
 		return (SDL_GetRectIntersectionFloat(&source, &us, &result));
 	}
 
-	
+	bool IsRenderable() const{
+		return mRenderable;
+	}	
 
 	protected:
 		Sprite mSprite;
@@ -198,9 +195,9 @@ struct Projectile : public GameEntity{
 
 
 
-	void Launch(float x, float y, bool yDirIsUp){
+	void Launch(float x, float y, bool yDirIsUp, float minLaunchTime=3000){
 		// Get current time and compute the delay for the projectile
-		if(SDL_GetTicks() - timeSinceLastLaunch > 3000){
+		if(SDL_GetTicks() - timeSinceLastLaunch > minLaunchTime){
 			timeSinceLastLaunch = SDL_GetTicks();
 			mIsFiring=true;
 			mYDirUp = yDirIsUp;
@@ -229,13 +226,22 @@ struct Projectile : public GameEntity{
 	
 	}
 
-
+	
+	void Render(SDL_Renderer *renderer) override{
+		if(mRenderable){
+		
+			mSprite.Render(renderer);
+		}
+		else{
+		
+		}
+	}
 
 
 
 	private:
 		//Sprite mSprite;
-		float mSpeed{300.0f};
+		float mSpeed{200.0f};
 		bool mYDirUp{true};
 		bool mIsFiring{false};
 		Uint64 timeSinceLastLaunch;
@@ -243,8 +249,15 @@ struct Projectile : public GameEntity{
 
 struct EnemyGameEntity : public GameEntity{
 
-	EnemyGameEntity(Sprite sprite) : GameEntity(sprite){ //delegating constructor
-	
+	EnemyGameEntity(SDL_Renderer *renderer, Sprite sprite) : GameEntity(sprite){ //delegating constructor
+		Sprite sp;
+		sp.CreateSprite(renderer, "./images/bulletNew.bmp");
+		mProjectile = std::make_shared<Projectile>(sp);
+			
+		
+		// Random Launch time
+
+		mMinLaunchTime += std::rand() % 10000;
 	}
 
 	virtual ~EnemyGameEntity(){
@@ -255,7 +268,8 @@ struct EnemyGameEntity : public GameEntity{
 	
 	}
 
-	void Update(float deltaTime) override{
+	virtual void Update(float deltaTime) override{
+		mProjectile->Update(deltaTime);
 		if(offset > 80){
 			xPosDir = false;	
 		}
@@ -273,30 +287,52 @@ struct EnemyGameEntity : public GameEntity{
 		else{
 			mSprite.SetX(mSprite.GetX() - mSpeed * deltaTime);
 			offset -= mSpeed * deltaTime;
+		
+		
 		}
 
-		
+		if(mRenderable){
+
+			mProjectile->Launch(mSprite.GetX(), mSprite.GetY(), false, mMinLaunchTime);
+
+		}
 	
 	}
 
-	//virtual void Render(SDL_Renderer *renderer){
-	//	mSprite.Render(renderer);
-	//}
-	private:
+	virtual void Render(SDL_Renderer *renderer){
+		if(mRenderable){
+			mProjectile->Render(renderer);
+			mSprite.Render(renderer);
+		}
+		else{
 		
+		}
+
+	}
+	
+	virtual std::shared_ptr<Projectile> GetProjectile() const {
+		return mProjectile;
+	}
+
+	private:
+		std::shared_ptr<Projectile> mProjectile;	
 		bool xPosDir{true};
 		float offset{0};
 		float mSpeed{100};
+		float mMinLaunchTime{5000.0f};
 
 };
 
 struct HeroGameEntity : public GameEntity{
 
-	HeroGameEntity(SDL_Renderer *renderer, Sprite sprite) : GameEntity(sprite){ //delegating constructor
-
+	HeroGameEntity(SDL_Renderer *renderer, Sprite sprite, int mScreenWidth, int mScreenHeight) : GameEntity(sprite){ //delegating constructor
+		
+		mScreenW = mScreenWidth;
+		mScreenH = mScreenHeight;
 		Sprite sp;
-		sp.CreateSprite(renderer,"./images/bulletImg.bmp");
+		sp.CreateSprite(renderer,"./images/bulletNew.bmp");
 		mProjectile = std::make_shared<Projectile>(sp);
+		
 	}
 
 	virtual ~HeroGameEntity(){
@@ -307,10 +343,19 @@ struct HeroGameEntity : public GameEntity{
 		const Uint8 *state = SDL_GetKeyboardState(nullptr);
 		if(state[SDL_SCANCODE_A]){
 			//SDL_Log("Left key pressed");
+			if( mSprite.GetX() <= 0){
+				//mSprite.SetX(mSprite.GetX());
+				//SDL_Log("%f",mSprite.GetX());
+				mSprite.SetX(mScreenW-mSprite.GetW());
+			} 
 			mSprite.SetX(mSprite.GetX() - mSpeed * deltaTime);
 		}
 		else if(state[SDL_SCANCODE_D]){
 			//SDL_Log("right key pressed");
+			if( mSprite.GetX() >= (mScreenW)){
+				//SDL_Log("%f",mSprite.GetX());
+				mSprite.SetX(0);
+			}
 			mSprite.SetX(mSprite.GetX() + mSpeed * deltaTime);
 		}
 
@@ -322,7 +367,7 @@ struct HeroGameEntity : public GameEntity{
 			
 	}
 
-	void Update(float deltaTime) override{
+	virtual void Update(float deltaTime) override{
 		mProjectile -> Update(deltaTime);	
 
 		
@@ -340,7 +385,9 @@ struct HeroGameEntity : public GameEntity{
 
 	private:
 		
-		
-		float mSpeed{150};
+		int mScreenW;
+		int mScreenH;
+			
+		float mSpeed{100};
 		std::shared_ptr<Projectile> mProjectile;
 };

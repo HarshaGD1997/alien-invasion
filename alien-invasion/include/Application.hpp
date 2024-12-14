@@ -42,12 +42,16 @@ struct Application{
 
 	void StartUp(){
 		// creating an SDL Window
-		mWindow = SDL_CreateWindow("Alien Invasion", 640, 480, SDL_EVENT_WINDOW_SHOWN);
+		mWindow = SDL_CreateWindow("Alien Invasion", mScreenWidth, mScreenHeight, SDL_EVENT_WINDOW_SHOWN | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_RESIZABLE);
 		
 		if(nullptr == mWindow){
 			SDL_Log("Error in creating SDL_Window");
 		}
 
+		
+
+		SDL_GetWindowSize(mWindow, &mScreenWidth, &mScreenHeight);
+		SDL_Log("%d %d", mScreenWidth, mScreenHeight);
 
 		// Creating a SDL Renderer 
 		// Making use of Hardware acceleration
@@ -59,34 +63,68 @@ struct Application{
 		}
 
 		// Init for enemies 
-		int row = 1;
-		int col = 1;
-		for(int i=0; i<36; i++){
+		int row = 2;
+		int col = 2;
+		for(int i=0; i<50; i++){
 			Sprite sp;
+			
 			sp.CreateSprite(mRenderer, "./images/enemy2.bmp");
-			
-			
-			if(i % 12 == 0){
+			sp.SetW(sp.GetW() + 15);	
+			sp.SetH(sp.GetH() + 15);
+				
+			if(i % 16  == 0){
 				++row;
 				col = 0;
 			}
-			sp.Move(col*40+80, row*40);
+			sp.Move(col*100+160, row*50);
 			col++;
 
-			std::unique_ptr<GameEntity> ge = std::make_unique<EnemyGameEntity>(sp);
+			std::unique_ptr<EnemyGameEntity> ge = std::make_unique<EnemyGameEntity>(mRenderer, sp);
 			enemies.push_back(std::move(ge));	
 		}
+		
+		/* ------- Chat GPT code -----------------
+
+		int maxCols = 5;
+		int enemySpacing = 50;
+		int enemyW = 32;
+		int enemyH = 32;
+
+		int gridW = maxCols * (enemyW + enemySpacing) - enemySpacing;
+		int gridH = (100 / maxCols) * (enemyH + enemySpacing) - enemySpacing;
+		int startX = (mScreenWidth - gridW) /2;
+		int startY = (mScreenHeight - gridH) / 2;
+
+		
+		for (int i=0; i<50; i++){
+		
+			Sprite sp;
+			sp.CreateSprite(mRenderer,"./images/enemy2.bmp");
+			//sp.SetW(sp.GetW() + 20);
+			//sp.SetH(sp.GetH() + 20);
+			int row = i / maxCols;
+			int col = i % maxCols;
+
+			int xPos = startX + col * (enemyW + enemySpacing);
+			int yPos = startY + row * (enemyH + enemySpacing);
+
+			sp.Move(xPos, yPos);
+
+			std::unique_ptr<EnemyGameEntity> ge = std::make_unique<EnemyGameEntity>(mRenderer, sp);
+			enemies.push_back(std::move(ge));
+
+		}*/		
 
 		// Init for hero
 		
 		Sprite heroSprite;
-		heroSprite.CreateSprite(mRenderer, "./images/hero1.bmp");
-		heroSprite.SetW(heroSprite.GetW() + 30);
-		heroSprite.SetH(heroSprite.GetH() + 30);
+		heroSprite.CreateSprite(mRenderer, "./images/heroImg.bmp");
+		heroSprite.SetW(heroSprite.GetW()+20);
+		heroSprite.SetH(heroSprite.GetH()+20);
 		
-		heroSprite.Move(640/2 - (32/2), 440);
+		heroSprite.Move(mScreenWidth/2 , mScreenHeight - 100);
 
-		hero = std::make_unique <HeroGameEntity>(mRenderer, heroSprite);
+		hero = std::make_unique <HeroGameEntity>(mRenderer, heroSprite, mScreenWidth, mScreenHeight);
 
 	}
 	
@@ -130,10 +168,17 @@ struct Application{
 		// updating enemies
 		for(int i=0; i < enemies.size(); i++){
 			enemies[i] -> Update(deltaTime);
-			bool result = enemies[i] -> Intersects(hero->GetProjectile());
+			bool enemyResult = enemies[i] -> Intersects(hero->GetProjectile());
+			bool GameOver = hero -> Intersects(enemies[i]->GetProjectile());
+			if(true==enemyResult && true==enemies[i]->IsRenderable()){
+				enemies[i] -> SetRenderable(false);
+				mPoints += 1;
+			}
 
-			if(result){
-				enemies[i] -> SetRenderable(!(result));
+			if(GameOver){
+				SDL_Log("You died");
+				SDL_Log("Score : %f",mPoints);
+				mRun = false;
 			}
 		}
 
@@ -183,13 +228,15 @@ struct Application{
 	// Class members
 	private:
 		// enimies 
-		std::vector<std::unique_ptr<GameEntity>> enemies;
+		std::vector<std::unique_ptr<EnemyGameEntity>> enemies;
 		// hero
 
 		std::unique_ptr<HeroGameEntity> hero;
 		bool mRun{true};
+		float mPoints{0.0f};
 		SDL_Window *mWindow;
 		SDL_Renderer *mRenderer;
-		
+		int mScreenWidth = 0;
+		int mScreenHeight = 0;	
 		
 };
