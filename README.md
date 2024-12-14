@@ -2,6 +2,8 @@
 ## Project made using SDL3 
 
 ### To-do List :
+
+![](./alien-invasion/vids/alien_invasion.gif)
  
 + ~~Setup Environment~~
 + ~~Initialized the code~~
