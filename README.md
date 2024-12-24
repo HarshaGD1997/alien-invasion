@@ -17,4 +17,6 @@
 + Customize
 
 
++ Known Bugs:
+    + Invisible projectile death 
 
