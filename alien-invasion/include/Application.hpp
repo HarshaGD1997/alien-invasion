@@ -65,7 +65,7 @@ struct Application{
 		// Init for enemies 
 		int row = 2;
 		int col = 2;
-		for(int i=0; i<50; i++){
+		for(int i=0; i<80; i++){
 			Sprite sp;
 			
 			sp.CreateSprite(mRenderer, "./images/enemy2.bmp");
@@ -169,7 +169,7 @@ struct Application{
 		for(int i=0; i < enemies.size(); i++){
 			enemies[i] -> Update(deltaTime);
 			bool enemyResult = enemies[i] -> Intersects(hero->GetProjectile());
-			bool GameOver = hero -> Intersects(enemies[i]->GetProjectile());
+			bool GameOver = hero -> Intersects(enemies[i]->GetProjectile()) && enemies[i]->IsRenderable() == true;
 			if(true==enemyResult && true==enemies[i]->IsRenderable()){
 				enemies[i] -> SetRenderable(false);
 				mPoints += 1;
