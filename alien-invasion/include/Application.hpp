@@ -2,8 +2,10 @@
 
 #include <SDL3/SDL.h>
 #include "Sprite.hpp"
-
-
+#include "EnemyGameEntity.hpp"
+#include "HeroGameEntity.hpp"
+#include "GameEntity.hpp"
+#include "Projectile.hpp"
 
 struct Application{
 	
