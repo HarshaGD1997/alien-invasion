@@ -13,10 +13,10 @@
 + ~~Collision Detection~~
 + Score Tracker
 + Game reset
-+ Refactor code
++ ~~Refactor code~~
 + Customize
 
 
 + Known Bugs:
-    + Invisible projectile death 
+    + ~~Invisible projectile death~~ 
 
